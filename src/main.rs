@@ -13,10 +13,13 @@ struct Args {
 
 #[derive(Subcommand, Debug)]
 enum Commands {
+    /// Create a new task
     New {
         #[arg(long, value_name = "task-name")]
+        /// The name of the task
         name: String,
         #[arg(long, value_name = "due-date")]
+        /// The date the task is due
         due: Option<String>,
     },
 }
