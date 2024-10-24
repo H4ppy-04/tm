@@ -46,7 +46,7 @@ impl Task {
 
     fn new(name: String, due: Option<NaiveDate>) -> Self {
         if due.is_some_and(|x| !Self::positive_date_delta(x)) {
-            eprintln!("Task date must be positive")
+            panic!("Task date must be positive")
         }
         Self { name, due }
     }
@@ -56,18 +56,19 @@ fn main() {
     let parsed_args = Args::parse();
     let mut tasks: Vec<Task> = Vec::new();
     match parsed_args.command {
-        Commands::New { name, due } => match due {
-            Some(value) => match date_from_str(&value) {
-                Ok(x) => tasks.push(Task::new(name, Some(x))),
-                Err(_) => {
-                    eprintln!("Date format is YYYY-MM-DD")
+        Commands::New { name, due } => {
+            if let Some(value) = due {
+                match date_from_str(&value) {
+                    Ok(x) => tasks.push(Task::new(name, Some(x))),
+                    Err(err) => {
+                        panic!("Date format is YYYY-MM-DD ({})", err)
+                    }
                 }
-            },
-            None => {}
-        },
+            }
+        }
     }
 
-    if tasks.len() > 0 {
+    if !tasks.is_empty() {
         for task in tasks.iter() {
             print!("Added task: {}", task)
         }
