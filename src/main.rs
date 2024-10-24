@@ -64,6 +64,8 @@ fn main() {
                         panic!("Date format is YYYY-MM-DD ({})", err)
                     }
                 }
+            } else {
+                tasks.push(Task::new(name, None))
             }
         }
     }
