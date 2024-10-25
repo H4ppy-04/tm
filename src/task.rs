@@ -41,8 +41,16 @@ impl Task {
     }
 }
 
-pub fn list_tasks(tasks: Vec<Task>, flavor: Flavor) {
-    for task in tasks.iter() {
+/// Sort tasks by dependencies
+pub fn sort_tasks(tasks: &mut [Task]) -> std::slice::IterMut<'_, Task> {
+    if !tasks.is_sorted_by(|a, b| a.dependencies.len() <= b.dependencies.len()) {
+        tasks.sort_by(|a, b| a.dependencies.len().cmp(&b.dependencies.len()));
+    }
+    tasks.iter_mut()
+}
+
+pub fn list_tasks(mut tasks: Vec<Task>, flavor: Flavor) {
+    for task in sort_tasks(&mut tasks) {
         match task.due {
             Some(date) => println!(
                 "{}: {} ({}) +{}",
