@@ -1,12 +1,21 @@
-use std::fmt::Display;
+mod color;
+mod task;
 
 use chrono::format::ParseError;
-use chrono::{Local, NaiveDate};
+use chrono::NaiveDate;
 use clap::{Parser, Subcommand};
+use color::ColorVariant;
+use task::{list_tasks, Task};
 
-#[derive(Parser, Debug)]
+const DEFAULT_FLAVOR: ColorVariant = ColorVariant::Mocha;
+
+#[derive(Parser)]
 #[command(version, about, long_about = None)]
 struct Args {
+    /// Specify a color palette
+    #[arg(long, num_args=0..=1)]
+    palette: Option<ColorVariant>,
+
     #[command(subcommand)]
     command: Commands,
 }
@@ -28,33 +37,6 @@ fn date_from_str(date: &str) -> Result<NaiveDate, ParseError> {
     NaiveDate::parse_from_str(date, "%Y-%m-%d")
 }
 
-struct Task {
-    name: String,
-    due: Option<NaiveDate>,
-}
-
-impl Display for Task {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self.due {
-            Some(value) => write!(f, "Task: {} (due {})", self.name, value),
-            None => write!(f, "Task: {}", self.name),
-        }
-    }
-}
-
-impl Task {
-    fn positive_date_delta(date: NaiveDate) -> bool {
-        Local::now().date_naive() < date
-    }
-
-    fn new(name: String, due: Option<NaiveDate>) -> Self {
-        if due.is_some_and(|x| !Self::positive_date_delta(x)) {
-            panic!("Task date must be positive")
-        }
-        Self { name, due }
-    }
-}
-
 fn main() {
     let parsed_args = Args::parse();
     let mut tasks: Vec<Task> = Vec::new();
@@ -74,8 +56,6 @@ fn main() {
     }
 
     if !tasks.is_empty() {
-        for task in tasks.iter() {
-            print!("Added task: {}", task)
-        }
+        list_tasks(tasks, parsed_args.palette.unwrap_or_default().into());
     }
 }

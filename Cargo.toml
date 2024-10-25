@@ -4,6 +4,8 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+ansi_term = "0.12.1"
+catppuccin = { version = "2.4.0", features = ["ansi-term"] }
 chrono = "0.4.38"
 clap = { version = "4.5.20", features = ["derive"] }
 clap_complete = "4.5.35"
