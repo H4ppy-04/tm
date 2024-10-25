@@ -11,7 +11,7 @@ use task::{list_tasks, Task};
 #[command(version, about, long_about = None)]
 struct Args {
     /// Specify a color palette
-    #[arg(long, num_args=0..=1)]
+    #[arg(long, num_args=0..=1)] // NOTE: is there a better way to do this? - H4ppy-04
     palette: Option<ColorVariant>,
 
     #[command(subcommand)]
@@ -22,10 +22,10 @@ struct Args {
 enum Commands {
     /// Create a new task
     New {
-        #[arg(long, value_name = "task-name")]
+        #[arg(long, value_name = "description")]
         /// The name of the task
         name: String,
-        #[arg(long, value_name = "due-date")]
+        #[arg(long, value_name = "date")]
         /// The date the task is due
         due: Option<String>,
     },
@@ -44,7 +44,7 @@ fn main() {
                 match date_from_str(&value) {
                     Ok(x) => tasks.push(Task::new(name, Some(x))),
                     Err(err) => {
-                        panic!("Date format is YYYY-MM-DD ({})", err)
+                        panic!("Invalid date format: format is YYYY-MM-DD ({})", err)
                     }
                 }
             } else {
