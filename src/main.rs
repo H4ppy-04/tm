@@ -7,8 +7,6 @@ use clap::{Parser, Subcommand};
 use color::ColorVariant;
 use task::{list_tasks, Task};
 
-const DEFAULT_FLAVOR: ColorVariant = ColorVariant::Mocha;
-
 #[derive(Parser)]
 #[command(version, about, long_about = None)]
 struct Args {

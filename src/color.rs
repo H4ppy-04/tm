@@ -3,8 +3,6 @@ use std::str::FromStr;
 use catppuccin::{self, Flavor};
 use clap::ValueEnum;
 
-use crate::DEFAULT_FLAVOR;
-
 /// Convert a catppuccin color into an ANSI color (type casting)
 pub const fn to_ansi(color: &catppuccin::Color) -> ansi_term::Colour {
     ansi_term::Colour::RGB(color.rgb.r, color.rgb.g, color.rgb.b)
@@ -32,7 +30,7 @@ impl FromStr for ColorVariant {
                 "latte" => Self::Latte,
                 "frappe" => Self::Frappe,
                 "macchiato" => Self::Macchiato,
-                _ => DEFAULT_FLAVOR,
+                _ => Self::Mocha,
             };
         }
         Ok(variant)
