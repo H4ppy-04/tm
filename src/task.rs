@@ -1,18 +1,20 @@
 use catppuccin::Flavor;
 use chrono::{Local, NaiveDate};
+use serde::Serialize;
 use std::fmt::Display;
 
 use crate::color::to_ansi;
 
+#[derive(Serialize)]
 pub struct Task {
     pub name: String,
-    pub due: Option<NaiveDate>,
+    pub due: Option<String>,
     pub dependencies: Vec<Self>,
 }
 
 impl Display for Task {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self.due {
+        match &self.due {
             Some(value) => write!(f, "Task: {} (due {})", self.name, value),
             None => write!(f, "Task: {}", self.name),
         }
@@ -30,7 +32,7 @@ impl Task {
         }
         Self {
             name,
-            due,
+            due: due.map(|x| x.to_string()),
             dependencies: Vec::new(),
         }
     }
@@ -49,9 +51,9 @@ pub fn sort_tasks(tasks: &mut [Task]) -> std::slice::IterMut<'_, Task> {
     tasks.iter_mut()
 }
 
-pub fn list_tasks(mut tasks: Vec<Task>, flavor: Flavor) {
-    for task in sort_tasks(&mut tasks) {
-        match task.due {
+pub fn list_tasks(tasks: &mut [Task], flavor: Flavor) {
+    for task in sort_tasks(tasks) {
+        match &task.due {
             Some(date) => println!(
                 "{}: {} ({}) +{}",
                 to_ansi(&flavor.colors.pink).bold().paint("Task"),
