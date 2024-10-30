@@ -6,7 +6,7 @@ use chrono::NaiveDate;
 use clap::{Parser, Subcommand};
 use color::ColorVariant;
 use serde_json::{Map, Value};
-use task::{list_tasks, Task};
+use task::{show_list, Task};
 
 #[derive(Parser)]
 #[command(version, about, long_about = None)]
@@ -54,7 +54,7 @@ impl State {
 
     fn list_tasks(&mut self) {
         if !self.tasks.is_empty() {
-            list_tasks(
+            show_list(
                 &mut self.tasks,
                 self.args.palette.clone().unwrap_or_default().into(),
             );

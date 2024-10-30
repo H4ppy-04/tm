@@ -51,7 +51,7 @@ pub fn sort_tasks(tasks: &mut [Task]) -> std::slice::IterMut<'_, Task> {
     tasks.iter_mut()
 }
 
-pub fn list_tasks(tasks: &mut [Task], flavor: Flavor) {
+pub fn show_list(tasks: &mut [Task], flavor: Flavor) {
     for task in sort_tasks(tasks) {
         match &task.due {
             Some(date) => println!(
